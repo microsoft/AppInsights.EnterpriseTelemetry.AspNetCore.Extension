@@ -11,7 +11,7 @@ using AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares;
 
 namespace AppInsights.EnterpriseTelemetry.Web.Extension
 {
-    public static class FxpTelemetryExtensions
+    public static class EnterpriseTelemetryExtensions
     {
         private static ILogger _logger;
         private static ApplicationInsightsConfiguration _appInsightsConfiguration;
