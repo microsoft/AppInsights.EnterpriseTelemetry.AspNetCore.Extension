@@ -21,4 +21,4 @@ jobs:
     - name: Pack
       run: dotnet pack **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.csproj
     - name: Publish
-      run: dotnet nuget push **/*.nupkg --api-key <<add_nuget_key>> --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NuGet_API_Key }} --source https://api.nuget.org/v3/index.json
