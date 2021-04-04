@@ -11,8 +11,12 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using AppInsights.EnterpriseTelemetry.Context;
 
+#pragma warning disable CA1031 // Do not catch general exception types
 namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
 {
+    /// <summary>
+    /// ASP.NET Core filter to log additional details about each incoming request and response
+    /// </summary>
     public sealed class RequestResponseLoggerFilterAttribute : ActionFilterAttribute
     {
         private readonly ILogger _logger;
@@ -63,7 +67,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
             }
             catch (Exception exception)
             {
-                Debug.Write($"UNHANDLED EXCEPTION IN TELEMETRY: {exception.ToString()}");
+                Debug.Write($"UNHANDLED EXCEPTION IN TELEMETRY: {exception}");
                 // DO-NOTING. HTTP FLOW SHOULD NOT BREAK FOR FAILURE TO LOG
             }
         }
@@ -190,3 +194,4 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         }
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types

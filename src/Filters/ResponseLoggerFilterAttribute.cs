@@ -10,8 +10,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using AppInsights.EnterpriseTelemetry.Context;
 
+#pragma warning disable CA1031 // Do not catch general exception types
 namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
-{
+{   
     public sealed class ResponseLoggerFilterAttribute : ActionFilterAttribute
     {
         private readonly ILogger _logger;
@@ -158,3 +159,4 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         }
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types

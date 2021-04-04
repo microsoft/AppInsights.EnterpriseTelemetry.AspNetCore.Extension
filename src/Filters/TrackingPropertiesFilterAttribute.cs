@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 
+#pragma warning disable CA1031 // Do not catch general exception types
 namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
 {
+    /// <summary>
+    /// ASP.NET Core filter to add tracking properties for each HTTP Request. Add Correlation ID, Sub-Correlation ID and Transaction ID
+    /// </summary>
     public sealed class TrackingPropertiesFilterAttribute : ActionFilterAttribute
     {
         private readonly string _correlationIdHeaderKey;
@@ -127,3 +131,4 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         }
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types

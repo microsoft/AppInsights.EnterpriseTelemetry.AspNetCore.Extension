@@ -7,8 +7,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 
+#pragma warning disable CA1031 // Do not catch general exception types
 namespace AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares
 {
+    /// <summary>
+    /// ASP.NET Core middleware to handle unhandled exception in the request pipeline
+    /// </summary>
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -102,3 +106,4 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares
         }
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types
