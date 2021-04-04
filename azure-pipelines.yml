@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+      - main
+
+jobs:
+- job: BuildTelemetryLibrary
+  displayName: Build Telemetry Library
+  pool:
+    vmImage: ubuntu-latest
+  variables:
+    BuildConfiguration: 'Release'
+    BuildPlatform: 'any cpu'
+  steps:
+  - task: NuGetToolInstaller@1
+    displayName: Install NuGet 5.5.0
+    inputs:
+      versionSpec: '5.5.0'
+      checkLatest: true
+  - task: UseDotNet@2
+    displayName: Use .NET Core 3.1.x
+    inputs:
+      packageType: 'sdk'
+      version: '3.1.x'
+  - task: NuGetCommand@2
+    displayName: Restore Solution
+    inputs:
+      command: 'restore'
+      restoreSolution: 'src/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln'
+      feedsToUse: 'select'
+  - task: DotNetCoreCLI@2
+    displayName: Build Library Projects
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: Test Projects
+    inputs:
+      command: 'test'
+      projects: '**/*.Tests.csproj'
