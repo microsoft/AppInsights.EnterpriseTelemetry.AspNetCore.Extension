@@ -7,8 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AppInsights.EnterpriseTelemetry.Web.Extension;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Filters;
+using AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares;
 
-namespace Telemetry.Web.Tests
+namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension.Sample
 {
     public class Startup
     {
@@ -22,7 +23,8 @@ namespace Telemetry.Web.Tests
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEnterpriseLogger(Configuration);
+            services.AddEnterpriseLogger(Configuration, new CustomStaticInitializer());
+            services.AddSingleton<IGlobalExceptionHandler, CustomExceptionHandler>();
             services.AddMvc(options =>
             {
                 options.Filters.Add<TrackingPropertiesFilterAttribute>();
@@ -64,7 +66,7 @@ namespace Telemetry.Web.Tests
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseEnterpriseTelemetry(Configuration);
+            app.UseEnterpriseTelemetry(Configuration, new CustomStaticInitializer());
             app.UseHttpsRedirection();
             // app.UseSecurityMiddleware(Configuration);
             app.UseMvc();

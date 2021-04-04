@@ -52,5 +52,12 @@ namespace Telemetry.Web.Tests.Controllers
             _logger.Log(context);
             return Ok("Message Logged");
         }
+
+        [HttpPost]
+        [Route("error")]
+        public IActionResult ThrowException([FromQuery] string errorMessage)
+        {
+            throw new Exception(errorMessage);
+        }
     }
 }

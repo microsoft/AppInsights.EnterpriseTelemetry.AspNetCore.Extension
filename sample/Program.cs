@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Telemetry.Web.Tests
+namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension.Sample
 {
     public class Program
     {

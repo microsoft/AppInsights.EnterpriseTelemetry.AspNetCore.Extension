@@ -26,7 +26,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         private readonly string _transactionIdHeaderKey;
         private readonly string _endToEndHeaderKey;
 
-        public RequestResponseLoggerFilterAttribute(ILogger logger, IConfiguration config)
+        public RequestResponseLoggerFilterAttribute(IConfiguration config, ILogger logger)
             :this(logger,
                         config.GetValue<string>("Logging:LogLevel:Default") == "Trace" || config.GetValue<string>("Logging:LogLevel:Default") == "Debug",
                         config.GetValue<bool>("Logging:EnableHttpContextBodyLogging"),

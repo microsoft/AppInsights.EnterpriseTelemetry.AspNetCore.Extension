@@ -12,25 +12,11 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
         private readonly IConfiguration _config;
         private readonly ITelemetryInitializer[] _customInitializers;
         private static ApplicationInsightsConfiguration _appInsightsConfiguration;
-        private static readonly object _lock = new object();
-        private static AppInsightsConfigurationResolver _instance = null;
 
-        private AppInsightsConfigurationResolver(IConfiguration config, params ITelemetryInitializer[] customInitializers)
+        public AppInsightsConfigurationResolver(IConfiguration config, params ITelemetryInitializer[] customInitializers)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _customInitializers = customInitializers;
-        }
-
-        public static AppInsightsConfigurationResolver Get(IConfiguration config, params ITelemetryInitializer[] customInitializers)
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = new AppInsightsConfigurationResolver(config, customInitializers);
-                }
-                return _instance;
-            }
         }
 
         public ApplicationInsightsConfiguration Resolve()

@@ -7,26 +7,12 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
     internal class AppMetadataConfigurationResolver : IAppMetadataConfigurationResolver
     {
         private readonly IConfiguration _config;
-        private static readonly object _lock = new object();
-        private static AppMetadataConfigurationResolver _instance = null;
 
-        private AppMetadataConfigurationResolver(IConfiguration configuration)
+        public AppMetadataConfigurationResolver(IConfiguration configuration)
         {
             _config = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
-
-        public static AppMetadataConfigurationResolver Get(IConfiguration config)
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = new AppMetadataConfigurationResolver(config);
-                }
-                return _instance;
-            }
-        }
-
+        
         public AppMetadataConfiguration Resolve()
         {
             return new AppMetadataConfiguration()
