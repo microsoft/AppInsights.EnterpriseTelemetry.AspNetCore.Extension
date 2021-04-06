@@ -12,7 +12,7 @@ using AppInsights.EnterpriseTelemetry.Context;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
-{   
+{
     public sealed class ResponseLoggerFilterAttribute : ActionFilterAttribute
     {
         private readonly ILogger _logger;
@@ -20,6 +20,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         private readonly string _correlationIdHeaderKey;
         private readonly string _transactionIdHeaderKey;
         private readonly string _endToEndHeaderKey;
+        private readonly List<string> _redactedHeaders;
 
         public ResponseLoggerFilterAttribute(ILogger logger, IConfiguration config)
             : this(
@@ -27,17 +28,23 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
                   config.GetValue<bool>("Logging:ResponseBodyTrackingEnabled"),
                   config.GetValue<string>("Application:CorrelationIdHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:CorrelationKey") ?? TelemetryConstant.HEADER_DEFAULT_CORRELATION_KEY,
                   config.GetValue<string>("Application:TransactionIdHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:TransactionKey") ?? TelemetryConstant.HEADER_DEFAULT_TRANSACTION_KEY,
-                  config.GetValue<string>("Application:EndToEndTrackingHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:EndToEndKey") ?? TelemetryConstant.HEADER_DEFAULT_E2E_KEY
-                  )
+                  config.GetValue<string>("Application:EndToEndTrackingHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:EndToEndKey") ?? TelemetryConstant.HEADER_DEFAULT_E2E_KEY,
+                  config.GetValue<string>("Logging:RedactedHeaders"))
         { }
 
-        private ResponseLoggerFilterAttribute(ILogger logger, bool isHttpContextBodyLoggingEnabled, string correlationIdHeaderKey, string transactionIdHeaderKey, string e2eTrackingIdHeaderKey)
+        private ResponseLoggerFilterAttribute(ILogger logger, bool isHttpContextBodyLoggingEnabled, string correlationIdHeaderKey, string transactionIdHeaderKey, string e2eTrackingIdHeaderKey, string redactedHeaders)
         {
             _logger = logger;
             _isHttpContextBodyLoggingEnabled = isHttpContextBodyLoggingEnabled;
             _correlationIdHeaderKey = correlationIdHeaderKey;
             _transactionIdHeaderKey = transactionIdHeaderKey;
             _endToEndHeaderKey = e2eTrackingIdHeaderKey;
+            _redactedHeaders = new List<string>() { "Authorization" };
+            if (!string.IsNullOrWhiteSpace(redactedHeaders))
+            {
+                string[] splitRedactedHeaders = redactedHeaders.Split(',');
+                _redactedHeaders.AddRange(splitRedactedHeaders);
+            }
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -90,7 +97,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
 
             foreach (var header in request.Headers)
             {
-                if (header.Key == "Authorization")
+                if (_redactedHeaders != null && _redactedHeaders.Contains(header.Key))
                     logProperties.AddOrUpdate($"Request:Header:{header.Key}", TelemetryConstant.REDACTED);
                 else
                     logProperties.AddOrUpdate($"Request:Header:{header.Key}", string.Join(",", header.Value));
@@ -124,8 +131,10 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
 
             foreach (var header in response.Headers)
             {
-                logProperties.AddOrUpdate($"Response:Header:{header.Key}", string.Join(",", header.Value));
-                Console.WriteLine($"Response:Header:{header.Key} - " + string.Join(",", header.Value));
+                if (_redactedHeaders != null && _redactedHeaders.Contains(header.Key))
+                    logProperties.AddOrUpdate($"Response:Header:{header.Key}", TelemetryConstant.REDACTED);
+                else
+                    logProperties.AddOrUpdate($"Response:Header:{header.Key}", string.Join(",", header.Value));
             }
             logProperties.AddOrUpdate("Response:StatusCode", response.StatusCode.ToString());
             return logProperties;

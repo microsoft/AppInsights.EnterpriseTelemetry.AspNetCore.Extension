@@ -25,18 +25,19 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
         private readonly string _correlationIdHeaderKey;
         private readonly string _transactionIdHeaderKey;
         private readonly string _endToEndHeaderKey;
+        private readonly List<string> _redactedHeaders;
 
         public RequestResponseLoggerFilterAttribute(IConfiguration config, ILogger logger)
-            :this(logger,
+            : this(logger,
                         config.GetValue<string>("Logging:LogLevel:Default") == "Trace" || config.GetValue<string>("Logging:LogLevel:Default") == "Debug",
                         config.GetValue<bool>("Logging:EnableHttpContextBodyLogging"),
-                        config.GetValue<string>("Application:CorrelationIdHeaderKey"),
-                        config.GetValue<string>("Application:TransactionIdHeaderKey"),
-                        config.GetValue<string>("Application:EndToEndTrackingHeaderKey"))
-        {   
-        }
+                        config.GetValue<string>("Application:CorrelationIdHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:CorrelationKey") ?? TelemetryConstant.HEADER_DEFAULT_CORRELATION_KEY,
+                        config.GetValue<string>("Application:TransactionIdHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:TransactionKey") ?? TelemetryConstant.HEADER_DEFAULT_TRANSACTION_KEY,
+                        config.GetValue<string>("Application:EndToEndTrackingHeaderKey") ?? config.GetValue<string>("ItTelemetryExtensions:EndToEndKey") ?? TelemetryConstant.HEADER_DEFAULT_E2E_KEY,
+                        config.GetValue<string>("Logging:RedactedHeaders"))
+        { }
 
-        private RequestResponseLoggerFilterAttribute(ILogger logger, bool isVerboseLoggingEnabled, bool isHttpContextBodyLoggingEnabled, string correlationIdHeaderKey, string transactionIdHeaderKey, string e2eTrackingIdHeaderKey)
+        private RequestResponseLoggerFilterAttribute(ILogger logger, bool isVerboseLoggingEnabled, bool isHttpContextBodyLoggingEnabled, string correlationIdHeaderKey, string transactionIdHeaderKey, string e2eTrackingIdHeaderKey, string redactedHeaders)
         {
             _logger = logger;
             _isVerboseLoggingEnabled = isVerboseLoggingEnabled;
@@ -44,6 +45,12 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
             _correlationIdHeaderKey = correlationIdHeaderKey;
             _transactionIdHeaderKey = transactionIdHeaderKey;
             _endToEndHeaderKey = e2eTrackingIdHeaderKey;
+            _redactedHeaders = new List<string>() { "Authorization" };
+            if (!string.IsNullOrWhiteSpace(redactedHeaders))
+            {
+                string[] splitRedactedHeaders = redactedHeaders.Split(',');
+                _redactedHeaders.AddRange(splitRedactedHeaders);
+            }
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -125,16 +132,16 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension.Filters
 
             foreach (var header in request.Headers)
             {
-                if (header.Key == "Authorization")
+                if (_redactedHeaders != null && _redactedHeaders.Contains(header.Key))
                     logProperties.AddOrUpdate($"Request:Header:{header.Key}", TelemetryConstant.REDACTED);
                 else
                     logProperties.AddOrUpdate($"Request:Header:{header.Key}", string.Join(",", header.Value));
             }
-            logProperties.AddOrUpdate("Request:Method",      request.Method);
-            logProperties.AddOrUpdate("Request:Protocol",    request.Protocol);
-            logProperties.AddOrUpdate("Request:Scheme",      request.Scheme);
-            logProperties.AddOrUpdate("Request:Host",        request.Host.Value);
-            logProperties.AddOrUpdate("Request:Path",        request.Path.Value);
+            logProperties.AddOrUpdate("Request:Method", request.Method);
+            logProperties.AddOrUpdate("Request:Protocol", request.Protocol);
+            logProperties.AddOrUpdate("Request:Scheme", request.Scheme);
+            logProperties.AddOrUpdate("Request:Host", request.Host.Value);
+            logProperties.AddOrUpdate("Request:Path", request.Path.Value);
             logProperties.AddOrUpdate("Request:QueryString", request.QueryString.HasValue ? request.QueryString.Value : string.Empty);
 
             if (request.Method != HttpMethod.Get.ToString() && _isHttpContextBodyLoggingEnabled)

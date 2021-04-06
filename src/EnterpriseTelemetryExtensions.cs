@@ -29,7 +29,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension
                 {
                     return extensionBuilder;
                 }
-                extensionBuilder = TelemetryExtensionsBuilder.Create(config, customTelemetryInitializers);
+                extensionBuilder = new TelemetryExtensionsBuilder(config, customTelemetryInitializers);
                 return extensionBuilder;
             }
         }
@@ -52,7 +52,7 @@ namespace AppInsights.EnterpriseTelemetry.Web.Extension
         /// <param name="services"></param>
         /// <param name="config" cref="IConfiguration">Configuration</param>
         /// <param name="customTelemetryInitializer" cref="ITelemetryInitializer[]">App specific additional telemetry initializers</param>
-        public static void AddEnterpriseLogger(this IServiceCollection services, IConfiguration config, params ITelemetryInitializer[] customTelemetryInitializers)
+        public static void AddEnterpriseTelemetry(this IServiceCollection services, IConfiguration config, params ITelemetryInitializer[] customTelemetryInitializers)
         {
             ITelemetryExtensionsBuilder builder = GetBuilder(config, customTelemetryInitializers);
             builder.AddEnterpriseTelemetry(services);

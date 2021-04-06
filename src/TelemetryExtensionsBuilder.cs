@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,34 +17,23 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
         protected readonly IConfiguration _configuration;
         protected readonly IAppInsightsConfigurationResolver _appInsightsConfigurationResolver;
         protected readonly IAppMetadataConfigurationResolver _appMetadataConfigurationResolver;
-        protected readonly ITelemetryInitializer[] _telemetryInitializers;
+        protected readonly IList<ITelemetryInitializer> _telemetryInitializers;
 
-        private ILogger _logger;
-        private static TelemetryExtensionsBuilder _instance = null;
-        private static readonly object _lock = new object();
+        protected ILogger _logger;
+        protected static readonly object _lock = new object();
 
-        private TelemetryExtensionsBuilder(IConfiguration configuration, params ITelemetryInitializer[] telemetryInitializers)
+        public TelemetryExtensionsBuilder() { }
+
+        public TelemetryExtensionsBuilder(IConfiguration configuration, params ITelemetryInitializer[] telemetryInitializers)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _appInsightsConfigurationResolver = new AppInsightsConfigurationResolver(configuration, telemetryInitializers);
             _appMetadataConfigurationResolver = new AppMetadataConfigurationResolver(configuration);
-            _telemetryInitializers = telemetryInitializers;
+            _telemetryInitializers = telemetryInitializers ?? Array.Empty<ITelemetryInitializer>();
             CreateLogger();
         }
 
-        public static TelemetryExtensionsBuilder Create(IConfiguration configuration, params ITelemetryInitializer[] telemetryInitializers)
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = new TelemetryExtensionsBuilder(configuration, telemetryInitializers);
-                }
-                return _instance;
-            }
-        }
-
-        public ILogger CreateLogger()
+        public virtual ILogger CreateLogger()
         {
             lock (_lock)
             {
