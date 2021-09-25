@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppInsights.EnterpriseTelemetry.AspNetCore.Extension", "AppInsights.EnterpriseTelemetry.AspNetCore.Extension.csproj", "{41730251-89A1-40C6-8A08-0BEE7DE63589}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppInsights.EnterpriseTelemetry.AspNetCore.Extension.Sample", "..\sample\AppInsights.EnterpriseTelemetry.AspNetCore.Extension.Sample.csproj", "{0F0071BA-01EE-412A-A568-41F231E842FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{99310426-83A4-42A2-80FC-FAEC65498D33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample", "..\functionAppSample\AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample.csproj", "{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +25,17 @@ Global
 		{0F0071BA-01EE-412A-A568-41F231E842FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F0071BA-01EE-412A-A568-41F231E842FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F0071BA-01EE-412A-A568-41F231E842FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0F0071BA-01EE-412A-A568-41F231E842FE} = {99310426-83A4-42A2-80FC-FAEC65498D33}
+		{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE} = {99310426-83A4-42A2-80FC-FAEC65498D33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6D83FD0-A179-4524-BCF7-A67567E6FE89}
