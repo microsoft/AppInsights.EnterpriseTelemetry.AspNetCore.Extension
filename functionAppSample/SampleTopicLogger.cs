@@ -24,16 +24,16 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample
             BackgroundContext.AddCurrentContext(contextProvider, correlationId, executionContext.FunctionName, "N/A", transactionId, "System", "SYS");
 
             // Log a message
-            MessageContext msgContext = new("A message from service bus has been received");
+            var msgContext = new MessageContext("A message from service bus has been received");
             _logger.Log(msgContext);
 
             // Log an Event
-            EventContext evtContext = new("Test.DummyEvent");
+            var evtContext = new EventContext("Test.DummyEvent");
             evtContext.Properties.Add("Message", message);
             _logger.Log(evtContext);
 
             // Log a dependency
-            DependencyContext dependencyContext = new("SAMPLE", "https://test.com", "HTTP", message);
+            var dependencyContext = new DependencyContext("SAMPLE", "https://test.com", "HTTP", message);
             dependencyContext.CompleteDependency("200", "Sample Response");
             _logger.Log(dependencyContext);
         }
