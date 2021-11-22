@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.ApplicationInsights.Extensibility;
 using AppInsights.EnterpriseTelemetry.Configurations;
+using Newtonsoft.Json;
 
 namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
 {
@@ -31,8 +32,7 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
             string logLevel = _config.GetValue<string>("ApplicationInsights:TraceLevel");
             logLevel = string.IsNullOrWhiteSpace(logLevel) ? _config.GetValue<string>("Logging:LogLevel:Default") : logLevel;
 
-            string redactedHeadersConfig = _config.GetValue<string>("Logging:RedactedHeaders") ?? "";
-            List<string> redactedHeaders = redactedHeadersConfig.Split(',').ToList();
+            
 
             var appInsightsConfiguration = new ApplicationInsightsConfiguration()
             {
@@ -50,6 +50,7 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
                 TransactionIdPropertyKey = _config.GetValue<string>("Logging:Properties:TransactionId") ?? TelemetryConstant.TRANSACTION_KEY,
                 UserPropertyKey = _config.GetValue<string>("Logging:Properties:User") ?? TelemetryConstant.USER_KEY,
                 BusinessProcessPropertyKey = _config.GetValue<string>("Logging:Properties:BusinessProcess") ?? TelemetryConstant.BUSINESS_PROCESS_KEY,
+                TelemetrySource = _config.GetValue<string>("Logging:Source"),
 
                 RequestTelemetryEnhanced = _config.GetValue<bool>("Logging:RequestTelemetryEnhanced"),
                 RequestBodyTrackingEnabled = _config.GetValue<bool>("Logging:RequestBodyTrackingEnabled"),
@@ -61,14 +62,34 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
                 MaxExceptionDepth = _config.GetValue<int?>("Logging:MaxExceptionDepth") ?? TelemetryConstant.MAX_EXCEPTION_DEPTH,
                 MaxMessageSize = _config.GetValue<int?>("Logging:MaxMessageSize") ?? TelemetryConstant.MAX_MESSAGE_SIZE
             };
+
+            string redactedHeadersConfig = _config.GetValue<string>("Logging:RedactedHeaders") ?? "";
+            List<string> redactedHeaders = redactedHeadersConfig.Split(',').ToList();
             appInsightsConfiguration.RedactedHeaders.AddRange(redactedHeaders);
 
-            var customTrackingProperties = _config.GetSection("Logging:Properties:Custom").GetChildren();
+            string excludedUrlsConfig = _config.GetValue<string>("Logging:ExcludedUrls") ?? "";
+            List<string> excludedUrls = excludedUrlsConfig.Split(',').ToList();
+            appInsightsConfiguration.ExcludedRequestUrls.AddRange(excludedUrls);
+
+            string excludedHeadersConfig = _config.GetValue<string>("Logging:ExcludedHeaders");
+            Dictionary<string, string> excludedHeaders = !string.IsNullOrWhiteSpace(excludedHeadersConfig) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(excludedHeadersConfig) : new Dictionary<string, string>();
+            appInsightsConfiguration.ExcludedRequestHeaders = excludedHeaders;
+
+            IEnumerable<IConfigurationSection> customTrackingProperties = _config.GetSection("Logging:Properties:Custom").GetChildren();
             if (customTrackingProperties != null && customTrackingProperties.Any())
             {
-                foreach (var customProperty in customTrackingProperties)
+                foreach (IConfigurationSection customProperty in customTrackingProperties)
                 {
                     appInsightsConfiguration.CustomTrackingProperties.AddOrUpdate(customProperty.Key, customProperty.Value);
+                }
+            }
+
+            IEnumerable<IConfigurationSection> staticProperties = _config.GetSection("Logging:Properties:Static").GetChildren();
+            if (staticProperties != null && staticProperties.Any())
+            {
+                foreach(IConfigurationSection staticProperty in staticProperties)
+                {
+                    appInsightsConfiguration.StaticProperties.AddOrUpdate(staticProperty.Key, staticProperty.Value);
                 }
             }
 

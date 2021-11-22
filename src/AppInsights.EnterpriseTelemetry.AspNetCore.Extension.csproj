@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>AppInsights.EnterpriseTelemetry.AspNetCore.Extension</PackageId>
     <Title>AppInsights.EnterpriseTelemetry.AspNetCore.Extension</Title>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Authors>Pratik Bhattacharya</Authors>
     <Company>Microsoft</Company>
     <PackageDescription>Library for capturing enterprise level telemetry in an Web application built on ASP.NET Core 2 and above</PackageDescription>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AppInsights.EnterpriseTelemetry" Version="1.0.2" />
+    <PackageReference Include="AppInsights.EnterpriseTelemetry" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
   </ItemGroup>
 

@@ -9,6 +9,7 @@ using AppInsights.EnterpriseTelemetry.Configurations;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Filters;
 using AppInsights.EnterpriseTelemetry.AppInsightsInitializers;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares;
+using AppInsights.EnterpriseTelemetry.AppInsightsProcessors;
 
 namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
 {
@@ -64,6 +65,7 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
             AddTrackingFilter(services);
             AddRequestResponseFilter(services);
             services.AddApplicationInsightsTelemetry(_configuration);
+            services.AddApplicationInsightsTelemetryProcessor<ExcludedRequestsFilter>();
         }
 
         public void AddTrackingFilter(IServiceCollection services)

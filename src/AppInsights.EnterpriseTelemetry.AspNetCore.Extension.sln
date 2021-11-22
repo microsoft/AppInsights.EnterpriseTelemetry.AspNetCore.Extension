@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppInsights.EnterpriseTelem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{99310426-83A4-42A2-80FC-FAEC65498D33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample", "..\functionAppSample\AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample.csproj", "{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample", "..\functionAppSample\AppInsights.EnterpriseTelemetry.AspNetCore.Extension.FunctionAppSample.csproj", "{81F3893F-4EDE-4CE7-AD05-F6066BE8AFFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

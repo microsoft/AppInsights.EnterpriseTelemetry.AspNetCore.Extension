@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using AppInsights.EnterpriseTelemetry;
 using AppInsights.EnterpriseTelemetry.Context;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Filters;
+using AppInsights.EnterpriseTelemetry.AspNetCore.Extension.Sample;
 
 namespace Telemetry.Web.Tests.Controllers
 {
@@ -15,6 +16,13 @@ namespace Telemetry.Web.Tests.Controllers
         public TelemetryController(ILogger logger)
         {
             _logger = logger;
+        }
+
+        [HttpGet]
+        [Route("/api/probe/ping")]
+        public IActionResult Ping()
+        {
+            return new OkObjectResult("Pong");
         }
 
         [HttpPost]
@@ -57,7 +65,8 @@ namespace Telemetry.Web.Tests.Controllers
         [Route("error")]
         public IActionResult ThrowException([FromQuery] string errorMessage)
         {
-            throw new Exception(errorMessage);
+            new UnhandledExceptionGenerator().Generate(errorMessage);
+            return new OkObjectResult("Should throw error");
         }
     }
 }
