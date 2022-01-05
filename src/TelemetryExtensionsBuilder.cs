@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ApplicationInsights.Extensibility;
 using AppInsights.EnterpriseTelemetry.Configurations;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Filters;
+using AppInsights.EnterpriseTelemetry.AppInsightsProcessors;
 using AppInsights.EnterpriseTelemetry.AppInsightsInitializers;
 using AppInsights.EnterpriseTelemetry.Web.Extension.Middlewares;
-using AppInsights.EnterpriseTelemetry.AppInsightsProcessors;
 
 namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
 {
@@ -21,7 +21,7 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
         protected readonly IList<ITelemetryInitializer> _telemetryInitializers;
 
         protected ILogger _logger;
-        protected static readonly object _lock = new object();
+        protected static readonly object _lock = new();
 
         public TelemetryExtensionsBuilder() { }
 
@@ -62,6 +62,8 @@ namespace AppInsights.EnterpriseTelemetry.AspNetCore.Extension
         {
             ILogger logger = CreateLogger();
             services.AddSingleton(logger);
+            services.AddSingleton(_appInsightsConfigurationResolver.Resolve());
+            services.AddSingleton(_appMetadataConfigurationResolver.Resolve());
             AddTrackingFilter(services);
             AddRequestResponseFilter(services);
             services.AddApplicationInsightsTelemetry(_configuration);
