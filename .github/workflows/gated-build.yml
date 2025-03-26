@@ -1,20 +1,22 @@
 # This is a workflow to check the validity of the build after every check-in
-
+ 
 name: Gated-build
-
+ 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+ 
 jobs:
   build:
-
+ 
     runs-on: ubuntu-latest
-
+ 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2   
+    - name: Install OpenSSL
+      run: sudo apt-get update && sudo apt-get install -y libssl1.1 || sudo apt-get install -y libssl3
     - name: Setup .NET Latest
       uses: actions/setup-dotnet@v1
       with:
@@ -24,8 +26,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
     - name: Install dependencies
-      run: dotnet restore **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln
+      run: dotnet restore **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln  
     - name: Build
-      run: dotnet build **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --configuration Release --no-restore
+      run: dotnet build **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --configuration Release --no-restore   
     - name: Test
       run: dotnet test **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --no-restore --verbosity normal
