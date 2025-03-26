@@ -14,22 +14,20 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v3
+    - uses: actions/checkout@v2   
+    - name: Install OpenSSL
+      run: sudo apt-get update && sudo apt-get install -y libssl1.1 || sudo apt-get install -y libssl3
+    - name: Setup .NET Latest
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Install SSL Libraries
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libssl-dev
-    - name: Install Dependencies
-      run: dotnet restore **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln
+    - name: Install dependencies
+      run: dotnet restore **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln  
     - name: Build
-      run: dotnet build **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --configuration Release --no-restore
+      run: dotnet build **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --configuration Release --no-restore   
     - name: Test
       run: dotnet test **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --no-restore --verbosity normal
