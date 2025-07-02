@@ -47,6 +47,9 @@ extends:
         displayName: 'Build Telemetry Library'
         pool:
           type: windows
+        variables:
+          ob_outputDirectory: '$(Build.SourcesDirectory)\out' # this directory is uploaded to Pipeline artifacts, VSODrop, \\reddog, and Cloud Vault
+      
         steps:
         - task: NuGetToolInstaller@1
           displayName: Install NuGet 5.5.1
