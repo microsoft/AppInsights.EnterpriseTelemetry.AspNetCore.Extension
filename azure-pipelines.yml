@@ -69,6 +69,8 @@ extends:
             command: 'restore'
             projects: 'src/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln'
             feedsToUse: 'select'
+            vstsFeed: '3d1a556d-2042-4a45-9dae-61808ff33d3b/18496829-a46f-4605-8121-1fd072c0dfd1'
+            includeNuGetOrg: false
 
         - task: DotNetCoreCLI@2
           displayName: Build Library Projects
