@@ -100,7 +100,7 @@ extends:
             files_to_sign: '**/*.exe;**/*.dll;**/*.ps1'
             search_root: '$(Build.SourcesDirectory)/PublishedFolder'
         - task: ArchiveFiles@2
-          displayName: 'Archive Telemetry Library'
+          displayName: 'Archive Library Projects'
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder'
             includeRootFolder: false
