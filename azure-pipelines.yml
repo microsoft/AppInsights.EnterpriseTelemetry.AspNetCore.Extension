@@ -83,6 +83,15 @@ extends:
           inputs:
             command: 'test'
             projects: '**/*.Tests.csproj'
+        
+        - task: DotNetCoreCLI@2
+          displayName: Publish Library Projects
+          inputs:
+            command: publish
+            publishWebProjects: false
+            projects: '**/*.csproj'
+            arguments: --output $(Build.SourcesDirectory)/PublishedFolder --configuration $(BuildConfiguration)
+            zipAfterPublish: false
 
         - task: onebranch.pipeline.signing@1
           inputs:
@@ -91,6 +100,7 @@ extends:
             files_to_sign: '**/*.exe;**/*.dll;**/*.ps1'
             search_root: '$(Build.SourcesDirectory)/PublishedFolder'
         - task: ArchiveFiles@2
+          displayName: 'Archive Telemetry Library'
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/API'
             includeRootFolder: false
@@ -98,13 +108,7 @@ extends:
             archiveFile: 'API.zip'
             replaceExistingArchive: true
         - task: ArchiveFiles@2
-          inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/Functions'
-            includeRootFolder: false
-            archiveType: 'zip'
-            archiveFile: 'Functions.zip'
-            replaceExistingArchive: true
-        - task: ArchiveFiles@2
+          displayName: ArchiveFiles FunctionalTests
           enabled: false
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/FunctionalTests'
