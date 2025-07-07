@@ -102,7 +102,7 @@ extends:
         - task: ArchiveFiles@2
           displayName: 'Archive Telemetry Library'
           inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/API'
+            rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder'
             includeRootFolder: false
             archiveType: 'zip'
             archiveFile: 'API.zip'
