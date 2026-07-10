@@ -24,5 +24,5 @@ jobs:
       run: dotnet test **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.sln --no-restore --verbosity normal
     - name: Pack
       run: dotnet pack **/AppInsights.EnterpriseTelemetry.AspNetCore.Extension.csproj
-    - name: Publish
-      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NuGet_API_Key }} --source https://api.nuget.org/v3/index.json
+    # - name: Publish
+    #   run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NuGet_API_Key }} --source https://api.nuget.org/v3/index.json
